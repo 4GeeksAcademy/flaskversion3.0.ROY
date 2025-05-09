@@ -15,8 +15,10 @@ class User(db.Model):
     password: Mapped[str] = mapped_column(nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean(), nullable=False)
 
-    # follow:Mapped[list["Follower"]]=relationship(back_populates="followers")
-    # followinn:Mapped[list["Follower"]]=relationship(back_populates="following")
+    follow:Mapped[list["Follower"]]=relationship(back_populates="followers")
+    followinn:Mapped[list["Follower"]]=relationship(back_populates="following")
+
+    posts:Mapped[list["Posts"]]=relationship(back_populates="user")
    
     def serialize(self):
 
@@ -33,9 +35,8 @@ class Follower(db.Model):
     user_to_id:Mapped[int]=mapped_column(ForeignKey('users.id'))
     user_from_id:Mapped[int]=mapped_column(ForeignKey('users.id'))
     
-
-#     followers:Mapped["User"]=relationship(back_populates="follow")
-#     following:Mapped["User"]=relationship(back_populates="followinn")
+    followers:Mapped["User"]=relationship(back_populates="follow")
+    following:Mapped["User"]=relationship(back_populates="followinn")
 
 class Posts(db.Model):
 
@@ -43,7 +44,8 @@ class Posts(db.Model):
     id:Mapped[int]=mapped_column(primary_key=True)
     user_id:Mapped[int]=mapped_column(ForeignKey('users.id'))
     medias:Mapped[list["Medias"]]=relationship(back_populates="post")
-
+    user:Mapped["User"]=relationship(back_populates="posts")
+    
 class Medias(db.Model):
    
    __tablename__='medias'
